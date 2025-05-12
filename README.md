@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Dynamic Routes and Params Example
 
-## Getting Started
+This project demonstrates how to use dynamic route parameters in Next.js using the App Router.
 
-First, run the development server:
+### Example: Dynamic URL Page
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The file `app/dynamicUrlSSR/[url]/page.tsx` creates a dynamic route. The `[url]` part of the folder name tells Next.js to treat anything in that segment of the URL as a parameter.
+
+#### Code Example
+
+```tsx
+// app/dynamicUrlSSR/[url]/page.tsx
+export default async function ProductPage({ params }) {
+  const { url } = params;
+  return (
+    <div>
+      <div>
+        <h1>Dynamic URL</h1>
+        <h1>{url}</h1>
+      </div>
+    </div>
+  );
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### How to Use
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Visit `/dynamicUrlSSR/hello` in your browser. The page will display `hello`.
+- Visit `/dynamicUrlSSR/anything-you-want` and it will display `anything-you-want`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### How it Works
 
-## Learn More
+- The folder name `[url]` makes the route dynamic.
+- The `params` object is provided by Next.js and contains all dynamic segments.
+- You can access the value with `const { url } = params;`.
 
-To learn more about Next.js, take a look at the following resources:
+#### More Info
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- You can add more dynamic segments by nesting folders, e.g. `[category]/[id]/page.tsx`.
+- See the [Next.js Dynamic Routes documentation](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) for more details.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Dynamic URL Handling Examples
 
-## Deploy on Vercel
+This project demonstrates several ways to handle dynamic URLs in Next.js:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 1. Client-side Dynamic Route
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`app/dynamicUrl/[url]/page.tsx`
+
+```tsx
+export default function DynamicUrlPage({ params }) {
+  const { url } = params;
+  return (
+    <div>
+      <h1>Dynamic URL (Client)</h1>
+      <div>{url}</div>
+    </div>
+  );
+}
+```
+
+- Access via `/dynamicUrl/anything` to see `anything` rendered.
+
+### 2. Server-side Rendering (SSR) Dynamic Route
+
+`app/dynamicUrlSSR/[url]/page.tsx`
+
+```tsx
+export default async function ProductPage({ params }) {
+  const { url } = params;
+  return (
+    <div>
+      <h1>Dynamic URL (SSR)</h1>
+      <div>{url}</div>
+    </div>
+  );
+}
+```
+
+- Access via `/dynamicUrlSSR/anything` to see `anything` rendered, using an async server component.
+
+### 3. API Route Returning JSON
+
+`app/api/dynamicUrl/[url]/route.ts`
+
+```ts
+import { NextResponse } from "next/server";
+
+export async function GET(request, { params }) {
+  const { url } = params;
+  return NextResponse.json({ url });
+}
+```
+
+- Fetch `/api/dynamicUrl/anything` to get `{ "url": "anything" }` as JSON.
+
+### 4. Using Search Params
+
+To access query/search parameters:
+
+```tsx
+// Example: app/dynamicUrlSSR/[url]/page.tsx
+import { useSearchParams } from "next/navigation";
+
+export default function Page({ params }) {
+  const searchParams = useSearchParams();
+  const foo = searchParams.get("foo");
+  return (
+    <div>
+      <div>URL param: {params.url}</div>
+      <div>Search param foo: {foo}</div>
+    </div>
+  );
+}
+```
+
+- Visit `/dynamicUrlSSR/anything?foo=bar` to see `foo: bar`.
