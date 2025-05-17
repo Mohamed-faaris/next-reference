@@ -89,7 +89,7 @@ export default function Home() {
                 "Content-Type": "application/json",
               },
             });
-            const data = await res.json();
+            const data:any = await res.json();
             setData(data);
           }}
         >
@@ -99,7 +99,7 @@ export default function Home() {
       </div>
       <div>
         {data && <div className="text-2xl">Data from API:</div>}
-        {data}
+        {data && JSON.stringify(data)}
       </div>
         
     </div>

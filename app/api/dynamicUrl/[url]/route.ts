@@ -21,12 +21,10 @@ export async function POST(
   {
     params,
   }: {
-    params: Promise<{ url: string }>
+    params: Promise<{ url: string }>;
   }
 ) {
   const { url } = await params;
   const body = await req.json();
-  return Response.json({
-    message: `Received URL param: ${url} and body: ${JSON.stringify(body)}`,
-  });
+  return Response.json({ url, ...body });
 }
