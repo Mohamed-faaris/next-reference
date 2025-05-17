@@ -82,7 +82,7 @@ export default function Home() {
             className="bg-white text-black p-2 rounded-xl m-2"
             onClick={async () => {
               const res = await fetch(
-                `http://localhost:3000/api/dynamicUrl/${url}`,
+                `/api/dynamicUrl/${url}`,
                 {
                   method: "POST",
                   body: JSON.stringify({ body }),
